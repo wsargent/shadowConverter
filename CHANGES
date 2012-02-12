@@ -1,0 +1,12 @@
+2/27/2005
+- Added OPML importer and exporter.
+- Expose more functionality to the command line converter.
+
+10/10/2004
+- Fixed high valued characters in XML to be converted to numeric entities.
+- Fixed commas and quotes on DDE import to Ecco.
+
+10/9/2004
+- Updated the converter to use Xerces, which doesn't crash like Crimson.
+- Fixed the directory structure to point to ShadowPlan400 directory
+

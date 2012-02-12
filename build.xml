@@ -1,0 +1,114 @@
+<project name="shadowConverter" default="dist" basedir=".">
+
+    <property file="build.properties"/>
+    <property file="${user.name}.properties"/>
+
+    <path id="lib.classpath">
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar"/>
+        <include name="**/*.zip"/>
+      </fileset>
+    </path>
+
+
+    <!--
+    ========================================================================
+    == Init
+    ========================================================================
+    -->
+    <target name="init">
+      <tstamp/>
+    </target>
+
+    <!--
+    ========================================================================
+    == Compile
+    ========================================================================
+    -->
+    <target name="compile" depends="init" description="Compiles the Java code.">
+      <mkdir dir="${classes.dir}"/>
+      <javac srcdir="${src.dir}"
+             destdir="${classes.dir}"
+             debug="on"
+             optimize="off"
+             deprecation="on">
+         <include name="**/*.java"/>
+         <classpath refid="lib.classpath"/>
+      </javac>
+      <copy todir="${classes.dir}">
+        <fileset dir="${src.dir}">
+          <include name="**/*.properties"/>
+          <include name="**/*.xml"/>
+          <include name="**/*.dtd"/>
+        </fileset>
+      </copy>
+    </target>
+
+    <!--
+    ========================================================================
+    == Make a distribution
+    ========================================================================
+    -->
+    <target name="dist" depends="clean,compile" description="Creates a distribution.">
+      <mkdir dir="${dist.dir}"/>
+      <mkdir dir="${javadoc.dir}"/>
+
+      <manifest file="${manifest.file}">
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Main-Class" value="${main.class}"/>
+        <attribute name="Class-Path" value="xercesImpl.jar java-getopt-1.0.9.jar log4j-1.2.8.jar xml-apis.jar"/>
+      </manifest>
+
+      <zip destfile="${converter.jar}">
+        <fileset dir="${classes.dir}">
+          <include name="**/*.class"/>
+          <include name="**/*.properties"/>
+          <include name="**/*.xml"/>
+          <include name="**/*.dtd"/>
+        </fileset>
+        <zipfileset dir="${build.dir}" includes="**/MANIFEST.MF" fullpath="META-INF/MANIFEST.MF"/>
+      </zip>
+
+      <zip destfile="${zip.file}">
+      	<zipfileset dir="${build.dir}" includes="converter.jar" prefix="${ant.project.name}/lib"/>
+        <zipfileset dir="${javadoc.dir}" includes="**/*" prefix="${ant.project.name}/javadoc"/>
+        <zipfileset dir="${src.dir}" includes="**/*" prefix="${ant.project.name}/src"/>
+        <zipfileset dir="${lib.dir}" includes="**/*" prefix="${ant.project.name}/lib"/>
+        <zipfileset dir="${etc.dir}" includes="**/*" prefix="${ant.project.name}/ecco"/>
+      	<zipfileset dir="${basedir}" includes="build.xml" prefix="${ant.project.name}"/>
+        <zipfileset dir="${basedir}" includes="build.properties" prefix="${ant.project.name}"/>
+        <zipfileset dir="${basedir}" includes="CHANGES" prefix="${ant.project.name}"/>
+        <zipfileset dir="${basedir}" includes="README.txt" prefix="${ant.project.name}"/>
+      </zip>
+
+    </target>
+
+    <!--
+    ========================================================================
+    == JavaDoc
+    ========================================================================
+    -->
+    <target name="javadoc" description="Creates the javadoc for the project.">
+        <mkdir dir="${javadoc.dir}"/>
+        <javadoc
+            destdir="${javadoc.dir}"
+            access="public" use="true" notree="false" nonavbar="false"
+            noindex="false" splitindex="true" author="true"
+            version="true" nodeprecatedlist="false" nodeprecated="false"
+            packagenames="com.*"
+            sourcepath="${src.dir}">
+            <classpath refid="lib.classpath"/>
+        </javadoc>
+    </target>
+
+    <!--
+    ========================================================================
+    == clean
+    ========================================================================
+    -->
+    <target name="clean" description="Cleans out the project generated files.">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+</project>

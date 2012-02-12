@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT body (outline*)>
+
+<!ELEMENT data (#PCDATA)>
+
+<!ELEMENT head (metadata*)>
+
+<!ELEMENT item (#PCDATA)>
+<!ATTLIST item name NMTOKEN #REQUIRED>
+
+<!ELEMENT metadata (#PCDATA)>
+<!ATTLIST metadata name ID #REQUIRED>
+
+<!ELEMENT oml (head,body)>
+<!ATTLIST oml version NMTOKEN #REQUIRED>
+
+<!ELEMENT outline (data?,item*,outline*)>
+<!ATTLIST outline
+	created CDATA #IMPLIED
+	modified CDATA #IMPLIED
+	text CDATA #IMPLIED
+	type NMTOKEN #IMPLIED
+	url CDATA #IMPLIED
+>
+
+
